@@ -9,41 +9,48 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/calculator/main.dart';
 
 class CalcButton extends StatefulWidget {
-  CalcButton({Key? key, required this.id}) : super(key: key);
+  CalcButton(
+      {Key? key, required this.id, required this.express, required this.res})
+      : super(key: key);
   int id;
+  dynamic res;
+  String express;
   @override
-  _CalcButtonState createState() => _CalcButtonState(this.id);
+  _CalcButtonState createState() =>
+      _CalcButtonState(this.id, this.express, this.res);
 }
 
 class _CalcButtonState extends State<CalcButton> {
-  double? _currentValue = 0;
-  String _expression = "0";
+  late dynamic _currentValue = 0;
+  late String _expression = "0";
   int id;
 
-  _CalcButtonState(this.id);
+  _CalcButtonState(this.id, this._expression, this._currentValue);
 
   @override
   void initState() {
-    init();
     super.initState();
+    // init();
+    // print(_currentValue);
+    // print(_expression);
   }
 
-  void init() async {
-    print("id:");
-    print(id);
-    var response = await Dio().get("http://47.112.108.20:3000/api/calc/c",
-        queryParameters: {"id": id});
-    var dat = jsonDecode(response.toString());
-    var result = dat['data'];
-    print("result");
-    print(dat);
-    print("express");
-    print(result[0]['expression']);
-    setState(() {
-      _currentValue = result[0]['res'] as double?;
-      _expression = result[0]['expression'].toString();
-    });
-  }
+  // void init() async {
+  //   print("id:");
+  //   print(id);
+  //   var response = await Dio().get("http://47.112.108.20:3000/api/calc/c",
+  //       queryParameters: {"id": id});
+  //   var dat = jsonDecode(response.toString());
+  //   var result = dat['data'];
+  //   print("result");
+  //   print(dat);
+  //   print("express");
+  //   print(result[0]['expression']);
+  //   setState(() {
+  //     _currentValue = result[0]['res'] as double?;
+  //     _expression = result[0]['expression'].toString();
+  //   });
+  // }
 
   // Future<String> _in(String s) async {
   //   final SharedPreferences prefs = await _prefs;
@@ -58,10 +65,6 @@ class _CalcButtonState extends State<CalcButton> {
   //   });
   //   return "error";
   // }
-
-  Future<String> mockNetworkData() async {
-    return Future.delayed(Duration(seconds: 0), () => "我是从互联网上获取的数据");
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,17 +98,17 @@ class _CalcButtonState extends State<CalcButton> {
         }
       },
       theme: const CalculatorThemeData(
-        borderColor: Colors.black,
+        borderColor: Color.fromARGB(255, 255, 255, 255),
         borderWidth: 2,
         displayColor: Colors.black,
         displayStyle: TextStyle(fontSize: 80, color: Colors.yellow),
         expressionColor: Colors.indigo,
         expressionStyle: TextStyle(fontSize: 20, color: Colors.white),
-        operatorColor: Colors.pink,
+        operatorColor: Color.fromARGB(255, 30, 233, 148),
         operatorStyle: TextStyle(fontSize: 30, color: Colors.white),
         commandColor: Colors.orange,
         commandStyle: TextStyle(fontSize: 30, color: Colors.white),
-        numColor: Colors.grey,
+        numColor: Color.fromARGB(255, 192, 11, 11),
         numStyle: TextStyle(fontSize: 50, color: Colors.white),
       ),
     );

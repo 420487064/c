@@ -16,7 +16,7 @@ class ListView3 extends StatefulWidget {
 class _ListView3State extends State<ListView3> {
   var len = 1;
   var express = <String>[];
-  var res = <String>[];
+  var res = <dynamic>[];
   var bool = <String>[];
   var id = <int>[];
 
@@ -31,7 +31,7 @@ class _ListView3State extends State<ListView3> {
     var expresss = <String>[];
     var ids = <int>[];
     var bools = <String>[];
-    var ress = <String>[];
+    var ress = <dynamic>[];
     var response = await Dio().get("http://47.112.108.20:3000/api/calc/b");
     var dat = jsonDecode(response.toString());
     var result = dat['data'];
@@ -40,7 +40,7 @@ class _ListView3State extends State<ListView3> {
     for (var i = 0; i < result.length; i++) {
       expresss.add(result[i]['expression'].toString());
       ids.add(result[i]['id']);
-      ress.add(result[i]['res'].toString());
+      ress.add(result[i]['res']);
       bools.add(result[i]['bool'].toString());
     }
 
@@ -61,10 +61,10 @@ class _ListView3State extends State<ListView3> {
     );
     Widget divider2 = Divider(color: Colors.green);
     return ListView.separated(
-      itemCount: len,
+      itemCount: len - 1,
       //列表项构造器
       itemBuilder: (BuildContext context, int index) {
-        String s = express[index] + "=" + res[index];
+        String s = express[index + 1] + "=" + res[index + 1].toString();
         return GestureDetector(
             child: ListTile(title: Text(s)),
             onTap: () {
@@ -73,7 +73,11 @@ class _ListView3State extends State<ListView3> {
               //     arguments: {"id": id[index]});
 
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => CalcButton(id: id[index])));
+                  builder: (context) => CalcButton(
+                        id: id[index],
+                        express: express[index],
+                        res: res[index] + 0.0,
+                      )));
             });
       },
       //分割器构造器

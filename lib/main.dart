@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_study/texts.dart';
 import 'package:flutter_study/views/calc_history.dart';
 import 'package:flutter_study/views/calculator.dart';
 import 'package:flutter_study/views/login_view.dart';
@@ -8,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   SharedPreferences.setMockInitialValues({});
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 //程序运行入口

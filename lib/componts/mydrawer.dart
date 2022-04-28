@@ -96,7 +96,11 @@ class _MyDrawerState extends State<MyDrawer> {
                       //      arguments: {"id": 1});
 
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => CalcButton(id: 1)));
+                          builder: (context) => CalcButton(
+                                id: 1,
+                                express: '0',
+                                res: 0.0,
+                              )));
                     },
                   ),
                 ],
