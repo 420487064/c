@@ -40,7 +40,8 @@ dependencies:
   shared_preferences: ^2.0.13
   fluttertoast: ^8.0.9
   flutter_simple_calculator: ^2.2.0
-  flutter_markdown: ^0.6.10
+  provider: ^5.0.0
+ 
   
 dev_dependencies:
   flutter_test:

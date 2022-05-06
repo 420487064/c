@@ -4,7 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_study/utils/calculator/calculator.dart';
+import 'package:flutter_study/utils/eventbus.dart';
+import 'package:flutter_study/viewmodel/calc_history.dart';
 import 'package:flutter_study/views/calculator.dart';
+import 'package:provider/provider.dart';
 
 class ListView3 extends StatefulWidget {
   ListView3({Key? key}) : super(key: key);
@@ -14,28 +17,38 @@ class ListView3 extends StatefulWidget {
 }
 
 class _ListView3State extends State<ListView3> {
-  var len = 1;
+  var len = 0;
   var express = <String>[];
   var res = <dynamic>[];
   var bool = <String>[];
   var id = <int>[];
+  List list = [];
 
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
+    bus.on(1, (parmas) {
+      context.read<calc_historyViewmodel>().sets(parmas.toString());
+      print("key0");
+      print(context.read<calc_historyViewmodel>().gets);
+    });
     init();
+    super.initState();
   }
 
   void init() async {
+    //list = context.read<calc_historyViewmodel>().getList;
+
     var expresss = <String>[];
     var ids = <int>[];
     var bools = <String>[];
     var ress = <dynamic>[];
-    var response = await Dio().get("http://47.112.108.20:3000/api/calc/b");
+    var response = await Dio().get("http://119.3.138.217:3000/api/calc/e",
+        queryParameters: {"zh": context.read<calc_historyViewmodel>().gets});
     var dat = jsonDecode(response.toString());
     var result = dat['data'];
-
+    print("list");
+    print(dat);
     var lens = result.length;
     for (var i = 0; i < result.length; i++) {
       expresss.add(result[i]['expression'].toString());
@@ -45,12 +58,20 @@ class _ListView3State extends State<ListView3> {
     }
 
     setState(() {
+      list;
       express = expresss;
       res = ress;
       bool = bools;
       len = lens;
       id = ids;
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    bus.off(1);
   }
 
   @override
@@ -61,18 +82,16 @@ class _ListView3State extends State<ListView3> {
     );
     Widget divider2 = Divider(color: Colors.green);
     return ListView.separated(
-      itemCount: len - 1,
+      itemCount: len,
       //列表项构造器
       itemBuilder: (BuildContext context, int index) {
-        String s = express[index + 1] + "=" + res[index + 1].toString();
+        index += 0;
+        String s = express[index] + "=" + res[index].toString();
         return GestureDetector(
             child: ListTile(title: Text(s)),
             onTap: () {
               print(id[index]);
-              // Navigator.pushNamed(context, "caculator",
-              //     arguments: {"id": id[index]});
-
-              Navigator.of(context).push(MaterialPageRoute(
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => CalcButton(
                         id: id[index],
                         express: express[index],
@@ -85,5 +104,6 @@ class _ListView3State extends State<ListView3> {
         return index % 2 == 0 ? divider1 : divider2;
       },
     );
+    ;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,25 +13,12 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _MyDrawerState extends State<MyDrawer> {
-  String? user = "账号未登入";
+  late String user = "未登入";
 
   @override
   void initState() {
-    // TODO: implement initState
-    init();
-    setState(() {
-      user;
-    });
     super.initState();
-  }
-
-  void init() async {
-    final prefs = await SharedPreferences.getInstance();
-    user = prefs.getString('user') ?? "账号未登入";
-  }
-
-  Future<String> mockNetworkData() async {
-    return Future.delayed(Duration(seconds: 1), () => "我是从互联网上获取的数据");
+    init();
   }
 
   @override
@@ -55,26 +44,9 @@ class _MyDrawerState extends State<MyDrawer> {
                       ),
                     ),
                   ),
-                  FutureBuilder<String>(
-                    future: mockNetworkData(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      // 请求已结束
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        if (snapshot.hasError) {
-                          // 请求失败，显示错误
-                          return Text("Error: ${snapshot.error}");
-                        } else {
-                          // 请求成功，显示数据
-                          return Text(
-                            user!,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          );
-                        }
-                      } else {
-                        // 请求未结束，显示loading
-                        return CircularProgressIndicator();
-                      }
-                    },
+                  Text(
+                    user,
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   )
                 ],
               ),
@@ -82,19 +54,17 @@ class _MyDrawerState extends State<MyDrawer> {
             Expanded(
               child: ListView(
                 children: <Widget>[
-                  ListTile(
-                      leading: const Icon(Icons.add),
-                      title: const Text('账号登入'),
-                      onTap: () {
-                        Navigator.pushNamed(context, "login");
-                      }),
+                  if (user == "未登入")
+                    ListTile(
+                        leading: const Icon(Icons.add),
+                        title: const Text('账号登入'),
+                        onTap: () {
+                          Navigator.pushNamed(context, "login");
+                        }),
                   ListTile(
                     leading: const Icon(Icons.add),
                     title: const Text('计算器'),
                     onTap: () {
-                      //    Navigator.pushNamed(context, "caculator",
-                      //      arguments: {"id": 1});
-
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => CalcButton(
                                 id: 1,
@@ -103,6 +73,14 @@ class _MyDrawerState extends State<MyDrawer> {
                               )));
                     },
                   ),
+                  if (user != "未登入")
+                    ListTile(
+                        leading: const Icon(Icons.add),
+                        title: const Text('账号退出'),
+                        onTap: () {
+                          pop();
+                          Navigator.pushNamed(context, "myhome");
+                        }),
                 ],
               ),
             ),
@@ -111,14 +89,19 @@ class _MyDrawerState extends State<MyDrawer> {
       ),
     );
   }
+
+  void init() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    user = await prefs.getString('user') ?? "未登入";
+    if (prefs.getString('user') == Null) prefs.setString('user', "未登入");
+    setState(() {
+      user;
+    });
+    print(user);
+  }
+
+  void pop() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("user", "未登入");
+  }
 }
-
-class $ {}
-
-// class MyDrawer extends StatelessWidget {
-//   const MyDrawer({
-//     Key? key,
-//   }) : super(key: key);
- 
-  
-// }

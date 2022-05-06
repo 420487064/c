@@ -109,9 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   TextButton(
                     child: const Text("创建"),
                     onPressed: () async {
-                      // ... 执行操作
-                      //    debugPrint( 'textfield.value(TextEditingController)=${_nameController.text}');
-                      await Dio().get("http://47.112.108.20:3000/api/textadd",
+                      await Dio().get("http://119.3.138.217:3000/api/textadd",
                           queryParameters: {
                             "title": '${_nameController.text}'
                           });

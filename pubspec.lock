@@ -181,13 +181,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.4"
-  flutter_markdown:
-    dependency: "direct main"
-    description:
-      name: flutter_markdown
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.6.10"
   flutter_simple_calculator:
     dependency: "direct main"
     description:
@@ -261,13 +254,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.2"
-  markdown:
-    dependency: transitive
-    description:
-      name: markdown
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "5.0.0"
   matcher:
     dependency: transitive
     description:
@@ -289,6 +275,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.7.0"
+  nested:
+    dependency: transitive
+    description:
+      name: nested
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
   objectbox:
     dependency: transitive
     description:
@@ -366,6 +359,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "4.2.4"
+  provider:
+    dependency: "direct main"
+    description:
+      name: provider
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.0.0"
   pub_semver:
     dependency: transitive
     description:

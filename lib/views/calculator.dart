@@ -1,10 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_study/views/text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/calculator/main.dart';
 
@@ -22,6 +18,7 @@ class CalcButton extends StatefulWidget {
 
 class _CalcButtonState extends State<CalcButton> {
   late dynamic _currentValue = 0;
+  late String user;
   late String _expression = "0";
   int id;
 
@@ -30,41 +27,8 @@ class _CalcButtonState extends State<CalcButton> {
   @override
   void initState() {
     super.initState();
-    // init();
-    // print(_currentValue);
-    // print(_expression);
+    init();
   }
-
-  // void init() async {
-  //   print("id:");
-  //   print(id);
-  //   var response = await Dio().get("http://47.112.108.20:3000/api/calc/c",
-  //       queryParameters: {"id": id});
-  //   var dat = jsonDecode(response.toString());
-  //   var result = dat['data'];
-  //   print("result");
-  //   print(dat);
-  //   print("express");
-  //   print(result[0]['expression']);
-  //   setState(() {
-  //     _currentValue = result[0]['res'] as double?;
-  //     _expression = result[0]['expression'].toString();
-  //   });
-  // }
-
-  // Future<String> _in(String s) async {
-  //   final SharedPreferences prefs = await _prefs;
-  //   String counter = prefs.getString('counter') ?? "";
-  //   counter = counter + s;
-  //   // print("result:" + counter);
-  //   ccontent = counter;
-  //   setState(() {
-  //     _counter = prefs.setString('counter', counter).then((bool success) {
-  //       return counter;
-  //     });
-  //   });
-  //   return "error";
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -84,9 +48,10 @@ class _CalcButtonState extends State<CalcButton> {
           // if ('$key' == '=') _in('$expression\t$key\t$value\n');
           if ('$key' == '=') {
             var response = await Dio()
-                .get("http://47.112.108.20:3000/api/calc/a", queryParameters: {
+                .get("http://119.3.138.217:3000/api/calc/a", queryParameters: {
               "express": '${expression}',
-              "res": '${value}'
+              "res": '${value}',
+              "zh": '${user}'
             });
             print(response);
           }
@@ -113,50 +78,36 @@ class _CalcButtonState extends State<CalcButton> {
       ),
     );
     return Scaffold(
-        appBar: AppBar(title: const Text("计算器"), actions: <Widget>[
-          //导航栏右侧菜单
-          IconButton(
-              icon: const Icon(Icons.settings),
-              //单击
-              onPressed: () {
-                //        print("content");
-                //          print(ccontent);
-                Navigator.pushNamed(context, "calc_history");
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (context) =>
-                //        text(
-                //         id: "计算器",
-                //         content: "${ccontent}",
-                //       ),
-                //     ));
-                // Navigator.of(context).pushNamed("text",
-                //     arguments: {"id": "计算器", "content": "${_counter}"});
-              })
-        ]),
+        appBar: AppBar(
+            title: const Text("计算器"),
+            leading: Builder(builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed("myhome");
+                },
+                tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+              );
+            }),
+            actions: <Widget>[
+              //导航栏右侧菜单
+              IconButton(
+                  icon: const Icon(Icons.settings),
+                  //单击
+                  onPressed: () {
+                    Navigator.of(context).pushNamed("calc_history");
+                  })
+            ]),
         body: SizedBox(
-            height: MediaQuery.of(context).size.height * 1, child: calc)
-        // FutureBuilder<String>(
-        //   future: mockNetworkData(),
-        //   builder: (BuildContext context, AsyncSnapshot snapshot) {
-        //     // 请求已结束
-        //     if (snapshot.connectionState == ConnectionState.done) {
-        //       if (snapshot.hasError) {
-        //         // 请求失败，显示错误
-        //         return Text("Error: ${snapshot.error}");
-        //       } else {
-        //         // 请求成功，显示数据
-        //         return SizedBox(
-        //             height: MediaQuery.of(context).size.height * 1,
-        //             child: calc);
-        //       }
-        //     } else {
-        //       // 请求未结束，显示loading
-        //       return Center(child: CircularProgressIndicator());
-        //     }
-        //   },
-        // )
-        );
+            height: MediaQuery.of(context).size.height * 1, child: calc));
+  }
+
+  void init() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    user = await prefs.getString('user') ?? "";
+    setState(() {
+      user;
+    });
+    print(user);
   }
 }

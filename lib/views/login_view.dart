@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_study/utils/fluttertoast.dart';
 import 'package:flutter_study/views/myhomepage.dart';
-import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginView extends StatefulWidget {
@@ -19,22 +18,15 @@ class _LoginViewState extends State<LoginView> {
   TextEditingController _controller2 = TextEditingController();
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     loadData();
+    super.initState();
   }
 
   void loadData() async {
-    var result =
-        await Dio().get("http://47.112.108.20:3000/api/blogs/getRecentBlog");
-    print(result);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _controller1.text = await prefs.getString("name")!;
+    print(_controller1.text);
   }
-
-// Container(
-//           //  height: 609,
-//           decoration: const BoxDecoration(
-//               image: DecorationImage(
-//                   image: AssetImage('images/1.jpg'), fit: BoxFit.fill)),
 
   @override
   Widget build(BuildContext context) {
@@ -95,56 +87,44 @@ class _LoginViewState extends State<LoginView> {
                 icon: const Icon(Icons.send),
                 label: const Text("登录"),
                 onPressed: () async {
-                  print('${_controller1.text}');
-                  print('${_controller2.text}');
                   var response = await Dio().get(
-                      "http://47.112.108.20:3000/api/user/id",
+                      "http://119.3.138.217:3000/api/user/id",
                       queryParameters: {
                         "user": '${_controller1.text}',
                         "pw": '${_controller2.text}'
                       });
+                  var dat = await jsonDecode(response.toString()); //3
+                  print("response");
                   print(response);
-                  var dat = jsonDecode(response.toString()); //3
-
-                  if (response == true) {
+                  print(dat["success"]);
+                  if (dat["success"] == false) {
+                    print("false");
                     Fluttertoast.showToast(
                         msg: "账号或者密码错误",
-                        textColor: Color.fromARGB(255, 175, 29, 29));
+                        backgroundColor: Colors.blue,
+                        textColor: Color.fromARGB(255, 255, 255, 255));
+                  } else {
+                    print("true");
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.setString('name', _controller1.text);
+                    await prefs.setString('user', _controller1.text);
+                    print("prefs");
+                    print(prefs.getString("user"));
+
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => MyHomePage()),
+                        (route) => route == null);
+                    Fluttertoast.showToast(
+                        msg: "登入成功",
+                        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                        gravity: ToastGravity.TOP,
+                        textColor: Colors.blue);
                   }
-                  // print(response);
-
-                  //   print(dat['data'][0]['pw']);
-                  //  print("111");
-
-                  final prefs = await SharedPreferences.getInstance();
-                  await prefs.setString('user', dat['data'][0]['user']);
-                  print("setstring");
-                  print(dat['data'][0]['user']);
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => MyHomePage()),
-                      (route) => route == null);
                 },
                 style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 30)),
               ),
-              // onTap: () {
-              //   print('${_controller1.text}');
-              //   print('${_controller2.text}');
-              //   var response = Dio().get(
-              //       "http://47.112.108.20:3000/api/user/id",
-              //       queryParameters: {
-              //         "user": '${_controller1.text}',
-              //         "pw": '${_controller2.text}'
-              //       });
-
-              //   var dat = jsonDecode(response.toString()); //3
-              //   print(dat['data'][0]['pw']);
-
-              //   Navigator.of(context).pushAndRemoveUntil(
-              //       MaterialPageRoute(builder: (context) => MyHomePage()),
-              //       (route) => route == null);
-              // },
-              // )
             ],
           ),
         ),

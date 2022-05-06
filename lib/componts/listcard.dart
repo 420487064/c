@@ -104,7 +104,7 @@ class _listcardState extends State<listcard> {
 
   //删除后的处理
   void dele() async {
-    await Dio().get("http://47.112.108.20:3000/api/textdelete",
+    await Dio().get("http://119.3.138.217:3000/api/textdelete",
         queryParameters: {"id": '${cid}'});
     setState(() {
       delete = true;

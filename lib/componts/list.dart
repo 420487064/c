@@ -44,7 +44,7 @@ class _AnimatedListRouteState extends State<AnimatedListRoute> {
                 // 请求失败，显示错误
                 return Text("Error: ${snapshot.error}");
               } else {
-                // 请求成功，显示数据 
+                // 请求成功，显示数据
                 //列表循环生成器
                 return ListView.builder(
                     itemCount: data.length,
@@ -161,7 +161,7 @@ class _AnimatedListRouteState extends State<AnimatedListRoute> {
     var ids = <String>[];
     var contents = <String>[];
     response =
-        await Dio().get("http://47.112.108.20:3000/api/blogs/getRecentBlog");
+        await Dio().get("http://119.3.138.217:3000/api/blogs/getRecentBlog");
 
     var dat = jsonDecode(response.toString()); //3
     var result = dat['blogs'];
@@ -183,7 +183,7 @@ class _AnimatedListRouteState extends State<AnimatedListRoute> {
     var ids = <String>[];
     var contents = <String>[];
     var response =
-        await Dio().get("http://47.112.108.20:3000/api/blogs/getRecentBlog");
+        await Dio().get("http://119.3.138.217:3000/api/blogs/getRecentBlog");
 
     var dat = jsonDecode(response.toString()); //3
     var result = dat['blogs'];
